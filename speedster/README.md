@@ -44,5 +44,5 @@ Specifies a server ID (from: http://www.speedtest.net/speedtest-servers.php):
 
 Specifies a URL (a miniserver for example: http://myminiserver.com)
 ```sh
-./speedster.py -t -s 911
+./speedster.py -t -s "http://myminiserver.com"
 ```
