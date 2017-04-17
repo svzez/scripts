@@ -27,7 +27,7 @@ optional arguments:
 
 ## Examples
 
-Full tests with plot, saving and reading info specified paths
+Full tests with plot, saving and reading info from/to specified paths
 ```sh
 ./speedster.py -p outputjson/ -t -o outputhtml/
 ```
@@ -37,7 +37,7 @@ Only ping tests (no Download/Upload):
 ./speedster.py -p outputjson/ -t -l -o outputhtml/
 ```
 
-Specifies a server ID (from: http://www.speedtest.net/speedtest-servers.php:
+Specifies a server ID (from: http://www.speedtest.net/speedtest-servers.php):
 ```sh
 ./speedster.py -t -s 911
 ```
