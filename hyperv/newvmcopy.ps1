@@ -33,8 +33,13 @@ Generation for the new Virtual Machine
 Log file.  If not there, it will write the output to the console
 
 .EXAMPLE
-.\NewVMCopy.ps1 -virtualMachineName NewVMCopy -pathToBaseVHD C:\BaseVHDs\WindowsServer2012R2.vhdx -pathToWorkingDir -virtualSwitch Network1 C:\temp -logFile logfile.txt 
+.\NewVMCopy.ps1 -virtualMachineName NewVMCopy -pathToBaseVHD `
+    C:\BaseVHDs\WindowsServer2012R2.vhdx -pathToWorkingDir C:\temp `
+    -virtualSwitch Network1 -logFile logfile.txt 
 
+NewVMCopy.ps1 [-pathToBaseVHD] <String> [-pathToWorkingDir] <String> `
+    [[-virtualMachineName] <String>] [-virtualSwitch] <String> [[-vmCpus] <Int32>] `
+    [[-vmRam] <Int64>] [[-generation] <Int32>] [[-logFile] <String>] [<CommonParameters>]
 #>
 
 [CmdletBinding(DefaultParametersetName='None')]
@@ -133,7 +138,7 @@ try {
 Write-Log -Message "Enabling Guest Service Interface Integration Service on $virtualMachineName" -logfile $logFile
 $error.clear()
 try {
-    Enable-VMIntegrationService –Name "Guest Service Interface" -VMName $virtualMachineName -ErrorAction Stop
+    Enable-VMIntegrationService ï¿½Name "Guest Service Interface" -VMName $virtualMachineName -ErrorAction Stop
     Write-Log -Message "Guest Service Interface Integration Service on $virtualMachineName enabled successfully" -logfile $logFile
 } Catch {
     Write-Log -Message "Could not enable Guest Service Interface Integration Service on $virtualMachineName" -Level ERROR -logfile $logFile
@@ -148,7 +153,7 @@ try {
     $timer = 0
     $timerLimit = 600
     $timerIncrement = 20
-    ($startResult = Start-VM –Name $virtualMachineName -ErrorAction Stop) | out-null
+    Start-VM -Name $virtualMachineName -ErrorAction Stop | out-null
     $vmStatus = Get-VMIntegrationService -VMName $virtualMachineName -Name Heartbeat
     while ($vmStatus.PrimaryStatusDescription -ne "OK" -And $timer -lt $timerLimit)
     {
@@ -170,7 +175,7 @@ try {
 }
 
 # Check IP Address
-($vmIPAddress = (Get-VMNetworkAdapter -VMName $virtualMachineName -Name 'Network Adapter').IPAddresses | where { $_ -match "\." } ) | out-null
+($vmIPAddress = (Get-VMNetworkAdapter -VMName $virtualMachineName -Name 'Network Adapter').IPAddresses | Where-Object { $_ -match "\." } ) | out-null
 $timer = 0
 $timerLimit = 600
 $timerIncrement = 20
@@ -179,7 +184,7 @@ while ( !$vmIPAddress -And $timer -lt $timerLimit)
     sleep $timerIncrement
     $timer = $timer + $timerIncrement
     Write-Log -Message "Waiting for $VirtualMachineName IP Address" -Level INFO -logfile $logFile
-    ($vmIPAddress = (Get-VMNetworkAdapter -VMName $virtualMachineName -Name 'Network Adapter').IPAddresses | where { $_ -match "\." } ) | out-null
+    ($vmIPAddress = (Get-VMNetworkAdapter -VMName $virtualMachineName -Name 'Network Adapter').IPAddresses | Where-Object { $_ -match "\." } ) | out-null
 }
 If ($timer -ge $timerLimit) {
     Write-Log -Message "$virtualMachineName get IP Address timed out" -Level ERROR -logfile $logFile
